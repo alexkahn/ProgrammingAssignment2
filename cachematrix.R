@@ -12,15 +12,34 @@
 # identity matrix.
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  X_inv <- NULL
+  set <- function(A) {
+    x <<- A
+    X_inv <<- NULL
+  }
+  get <- function() x
+  set_inv <- function(inverse) X_inv <<- inverse
+  get_inv <- function() X_inv
+  list(set = set, get = get,
+       set_inv = set_inv,
+       get_inv = get_inv)
 }
 
 
 # Function cacheSolve
 # Arguments: x - an object created by makeCacheMatrix
 #            ... - additional arguments to be passed to
-#     [Insert the functions used along with ref to their usage]
+#            solve(). Enter ?solve for more info.
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
+  X_inv <- x$get_inv()
+  if(!is.null(X_inv)) {
+    message("getting cached data")
+    return(X_inv)
+  }
+  data <- x$get()
+  X_inv <- solve(data, ...)
+  x$set_inv(X_inv)
+  X_inv
 }
